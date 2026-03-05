@@ -19,6 +19,8 @@ class CombinedLoomingTriggerPixel(Protocol):
 
         super().__init__()
 
+
+
         self.x_pos = Param(0.5, limits=(0.0, 1.0))
         self.y_pos = Param(0.5, limits=(0.0, 1.0))
         self.ratio_lv = Param(100, limits=(1, 1000))
@@ -29,6 +31,11 @@ class CombinedLoomingTriggerPixel(Protocol):
     def get_stim_sequence(self):
         start_trigger_duration = 2
         ratio_lv = self.ratio_lv
+
+
+
+
+
         looming_duration = self.looming_duration
         contrast = self.contrast
         max_loom_diameter = self.max_loom_diameter
@@ -57,8 +64,12 @@ class CombinedLoomingTriggerPixel(Protocol):
                 curved_screen=True
             )
 
+
         # Trigger pixel
         last_t = radius_df.iloc[-1, 0]
+
+
+        
         active_df = pd.DataFrame(
             dict(
                 t=[0, 1, 1, 1.2, 1.2, 1.3, 1.3, 1.5, 1.5, 1.6, 1.6, 1.8, 1.8, start_trigger_duration,
@@ -77,4 +88,5 @@ class CombinedLoomingTriggerPixel(Protocol):
 
 if __name__ == "__main__":
     # We make a new instance of Stytra with this protocol as the only option:
+
     s = Stytra(protocol=CombinedLoomingTriggerPixel())

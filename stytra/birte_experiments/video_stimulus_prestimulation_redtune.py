@@ -9,12 +9,12 @@ import pandas as pd
 
 
 class VideoProtocol(Protocol):
-    name = "video_stimulus_prestimulation_opto"
+    name = "video_stimulus_prestimulation_redtune"
     def __init__(self):
         super().__init__()
 
         # List all stimuli
-        json_paths = r"assets/stim_videos/20240219_prestimulation_opto/"
+        json_paths = r"assets/stim_videos/20250707_prestimulation_redtune/"
         json_files = [file for file in os.listdir(json_paths) if file.endswith('.json')]
         dfs = []  # an empty list to store the data frames
         for file in json_files:
@@ -46,27 +46,6 @@ class VideoProtocol(Protocol):
         self.unique_stimuli = unique_stimuli
         self.metadata_stimuli = metadata_stimuli
 
-#    def get_stim_sequence(self):
-#       stimuli = []
-#        stimulus = self.stimulus
-#        stimulus_index = self.unique_stimuli_list.index(stimulus)
-#        print(stimulus_index)
-
-#        video_name = self.unique_stimuli.loc[stimulus_index, 'name']
-#        path = 'stim_videos/20240219_prestimulation_opto/' + video_name + '.mp4'
-
-#        index = self.unique_stimuli_list.index(stimulus)]  # used in queries
-    # #        framerate = float(self.metadata_stimuli.query("name =
-#        name_stimulus = self.unique_stimuli.loc[index, 'name'= @name_stimulus").fps)
-#        video_duration = float(self.metadata_stimuli.query("name == @name_stimulus").video_duration)
-#        resolution_reduction_factor = float(self.metadata_stimuli.query("name == @name_stimulus").resolution_decreasing_factor)
-
-
-
-#        stimuli.append(VideoStimulus(video_path=path, framerate=framerate, duration=video_duration, resolution_reduction_factor=resolution_reduction_factor))
-
-#        return stimuli
-
     def get_stim_sequence(self):
         stimuli = []
         stimulus = self.stimulus  # From a stale config?
@@ -84,7 +63,7 @@ class VideoProtocol(Protocol):
         video_name = self.unique_stimuli.loc[stimulus_index, 'name']
 
         # os.path.join avoids issues with slashes:
-        path = os.path.join('stim_videos', '20240219_prestimulation_opto', video_name + '.mp4')
+        path = os.path.join('stim_videos', '20250707_prestimulation_redtune', video_name + '.mp4')
 
         name_stimulus = self.unique_stimuli.loc[stimulus_index, 'name']
         framerate = float(self.metadata_stimuli.query("name == @name_stimulus").fps.iloc[0])
@@ -96,6 +75,7 @@ class VideoProtocol(Protocol):
                                      resolution_reduction_factor=resolution_reduction_factor))
 
         return stimuli
+
 
 if __name__ == "__main__":
     st = Stytra(protocol=VideoProtocol())

@@ -14,6 +14,8 @@ class VideoProtocol(Protocol):
     def __init__(self):
         super().__init__()
 
+
+
         # List all stimuli
         json_paths = r"C:/Users/grolab/PycharmProjects/stytra/stytra/birte_experiments/assets/stim_videos/20220909_rings_and_black_screen/"
         json_files = [file for file in os.listdir(json_paths) if file.endswith('.json')]

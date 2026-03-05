@@ -14,7 +14,7 @@ class VideoProtocol(Protocol):
         super().__init__()
 
         # List all stimuli
-        json_paths = r"assets/stim_videos/20240219_prestimulation_opto/"
+        json_paths = r"assets/stim_videos/20250331_stefan/"
         json_files = [file for file in os.listdir(json_paths) if file.endswith('.json')]
         dfs = []  # an empty list to store the data frames
         for file in json_files:
@@ -46,56 +46,25 @@ class VideoProtocol(Protocol):
         self.unique_stimuli = unique_stimuli
         self.metadata_stimuli = metadata_stimuli
 
-#    def get_stim_sequence(self):
-#       stimuli = []
-#        stimulus = self.stimulus
-#        stimulus_index = self.unique_stimuli_list.index(stimulus)
-#        print(stimulus_index)
-
-#        video_name = self.unique_stimuli.loc[stimulus_index, 'name']
-#        path = 'stim_videos/20240219_prestimulation_opto/' + video_name + '.mp4'
-
-#        index = self.unique_stimuli_list.index(stimulus)]  # used in queries
-    # #        framerate = float(self.metadata_stimuli.query("name =
-#        name_stimulus = self.unique_stimuli.loc[index, 'name'= @name_stimulus").fps)
-#        video_duration = float(self.metadata_stimuli.query("name == @name_stimulus").video_duration)
-#        resolution_reduction_factor = float(self.metadata_stimuli.query("name == @name_stimulus").resolution_decreasing_factor)
-
-
-
-#        stimuli.append(VideoStimulus(video_path=path, framerate=framerate, duration=video_duration, resolution_reduction_factor=resolution_reduction_factor))
-
-#        return stimuli
-
     def get_stim_sequence(self):
         stimuli = []
-        stimulus = self.stimulus  # From a stale config?
-
-        # Check if restored stimulus value is in the list of valid options!
-        # If not, fall back to the first item in the list!
-        if stimulus not in self.unique_stimuli_list:
-            print(f"Warning: Stored stimulus '{stimulus}' is not valid for this protocol.")
-            stimulus = self.unique_stimuli_list[0]  # Fallback to a valid default
-            print(f"Falling back to default stimulus: '{stimulus}'")
-
+        stimulus = self.stimulus
         stimulus_index = self.unique_stimuli_list.index(stimulus)
-        print(f"Using stimulus index: {stimulus_index}")
+        print(stimulus_index)
 
         video_name = self.unique_stimuli.loc[stimulus_index, 'name']
+        path = 'stim_videos/20250331_stefan/' + video_name + '.mp4'
 
-        # os.path.join avoids issues with slashes:
-        path = os.path.join('stim_videos', '20240219_prestimulation_opto', video_name + '.mp4')
+        index = self.unique_stimuli_list.index(stimulus)
+        name_stimulus = self.unique_stimuli.loc[index, 'name']  # used in queries
+        framerate = float(self.metadata_stimuli.query("name == @name_stimulus").fps)
+        video_duration = float(self.metadata_stimuli.query("name == @name_stimulus").video_duration)
+        resolution_reduction_factor = float(self.metadata_stimuli.query("name == @name_stimulus").resolution_decreasing_factor)
 
-        name_stimulus = self.unique_stimuli.loc[stimulus_index, 'name']
-        framerate = float(self.metadata_stimuli.query("name == @name_stimulus").fps.iloc[0])
-        video_duration = float(self.metadata_stimuli.query("name == @name_stimulus").video_duration.iloc[0])
-        resolution_reduction_factor = float(
-            self.metadata_stimuli.query("name == @name_stimulus").resolution_decreasing_factor.iloc[0])
-
-        stimuli.append(VideoStimulus(video_path=path, framerate=framerate, duration=video_duration,
-                                     resolution_reduction_factor=resolution_reduction_factor))
+        stimuli.append(VideoStimulus(video_path=path, framerate=framerate, duration=video_duration, resolution_reduction_factor=resolution_reduction_factor))
 
         return stimuli
+
 
 if __name__ == "__main__":
     st = Stytra(protocol=VideoProtocol())
