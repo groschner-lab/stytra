@@ -185,7 +185,7 @@ class Pause(FullFieldVisualStimulus):
 class VideoStimulus(VisualStimulus, DynamicStimulus):
     """Displays videos using PIMS, at a specified framerate."""
 
-    def __init__(self, *args, video_path, framerate=None, duration=None, resolution_reduction_factor=2, **kwargs):
+    def __init__(self, *args, video_path, framerate=None, duration=None, resolution_reduction_factor=2, loop=False, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.name = "video"
@@ -202,6 +202,7 @@ class VideoStimulus(VisualStimulus, DynamicStimulus):
         self.duration = duration
 
         self.resolution_reduction_factor = resolution_reduction_factor
+        self.loop = loop
 
     def initialise_external(self, *args, **kwargs):
         super().initialise_external(*args, **kwargs)
@@ -230,7 +231,10 @@ class VideoStimulus(VisualStimulus, DynamicStimulus):
         if self._elapsed < self._last_frame_display_time:
             self._last_frame_display_time = 0
         if self._elapsed >= self._last_frame_display_time + 1 / self.framerate:
-            self.i_frame = int(round(self._elapsed * self.framerate))
+            if self.loop == True:
+                self.i_frame = int(round(self._elapsed * self.framerate)) % len(self._video_seq)
+            else:
+                self.i_frame = int(round(self._elapsed * self.framerate))
             next_frame = self._video_seq.get_frame(self.i_frame)
             if next_frame is not None:
                 self._current_frame = next_frame
@@ -242,6 +246,24 @@ class VideoStimulus(VisualStimulus, DynamicStimulus):
         tr = QTransform().scale(scaling_factor, scaling_factor)
         p.setTransform(tr)
         p.drawImage(QPoint(0, 0), img)
+
+
+class VideoStimulusLoop(VideoStimulus):
+    def update(self):
+        super().update()
+
+        if self._elapsed < self._last_frame_display_time:
+            self._last_frame_display_time = 0
+
+        if self._elapsed >= self._last_frame_display_time + 1 / self.framerate:
+            # looping frame index
+            self.i_frame = int(round(self._elapsed * self.framerate)) % len(self._video_seq)
+
+            next_frame = self._video_seq.get_frame(self.i_frame)
+
+            if next_frame is not None:
+                self._current_frame = next_frame
+                self._last_frame_display_time = self._elapsed
 
 
 class PositionStimulus(VisualStimulus, DynamicStimulus):
